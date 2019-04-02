@@ -1,4 +1,4 @@
-from SGPR import SGPR
+from IGPR import IGPR
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
@@ -17,27 +17,28 @@ def load_csv(file_name):
             data_set[i][j] = float(columns[i][j])
     return data_set
 
-
 training_set = load_csv('training_set.csv')
 training_target = load_csv('training_target.csv')
 test_set = load_csv('test_set.csv')
 test_target = load_csv('test_target.csv')
 
-data_len = 500
 
-print('iter0')
-sgpr = SGPR(training_set[0, :], training_target[0, :])
-print(sgpr.k_matrix)
-print(sgpr.inv_k_matrix)
+data_len = 5000
+
+print('iter 0')
+igpr = IGPR(training_set[0, :], training_target[0, :])
+print(igpr.k_matrix)
+print(igpr.inv_k_matrix)
 print(" ")
+
 for i in range(1, data_len):
     print('iter', i)
-    sgpr.learn(training_set[i, :], training_target[i, :])
+    igpr.learn(training_set[i, :], training_target[i, :])
     print(" ")
 
-pred = sgpr.predict(training_set[0, :])
+pred = igpr.predict(training_set[0, :])
 for i in range(1, data_len):
-    pred = np.vstack((pred, sgpr.predict(training_set[i, :])))
+    pred = np.vstack((pred, igpr.predict(training_set[i, :])))
 
 fig = plt.figure(figsize=(5, 5))
 gs = GridSpec(3, 2, figure=fig)
@@ -54,5 +55,24 @@ ax3.plot(training_target[0:data_len, 2])
 ax4.plot(pred[0:data_len, 0])
 ax5.plot(pred[0:data_len, 1])
 ax6.plot(pred[0:data_len, 2])
+
+plt.show()
+
+
+fig = plt.figure(figsize=(5, 5))
+gs = GridSpec(3, 2, figure=fig)
+ax1 = fig.add_subplot(gs[0, 0])
+ax2 = fig.add_subplot(gs[1, 0])
+ax3 = fig.add_subplot(gs[2, 0])
+ax4 = fig.add_subplot(gs[0, 1])
+ax5 = fig.add_subplot(gs[1, 1])
+ax6 = fig.add_subplot(gs[2, 1])
+
+ax1.plot(training_target[0:data_len, 3])
+ax2.plot(training_target[0:data_len, 4])
+ax3.plot(training_target[0:data_len, 5])
+ax4.plot(pred[0:data_len, 3])
+ax5.plot(pred[0:data_len, 4])
+ax6.plot(pred[0:data_len, 5])
 
 plt.show()
